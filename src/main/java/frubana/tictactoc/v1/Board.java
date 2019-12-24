@@ -1,8 +1,10 @@
 package frubana.tictactoc.v1;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class Board {
 	
@@ -10,7 +12,8 @@ public class Board {
 	Collection<Solution> solutions;
  
 	public Board() {
-		cells = new HashMap<Point, Cell>();
+		this.cells = new HashMap<Point, Cell>();
+		this.solutions = new ArrayList<Solution>();
 		this.createCells();
 		this.createSolutions();
 	}
@@ -21,7 +24,7 @@ public class Board {
 		for(int i=0;i<3;i++) {
 			Solution sh= new Solution();
 			Solution sv= new Solution();
-			for(int j=0;j<3;i++) { 
+			for(int j=0;j<3;j++) { 
 				sh.addCell(this.cells.get(new Point(i,j)));
 				sv.addCell(this.cells.get(new Point(j,i)));
 			}
@@ -36,15 +39,19 @@ public class Board {
 
 	public void createCells() {
 		for(int i=0;i<3;i++) {
-			for(int j=0;j<3;i++) {
+			for(int j=0;j<3;j++) {
 				Cell cell = new Cell(i,j);
-				cells.put(cell.getPoint(), cell);
+				this.cells.put(cell.getPoint(), cell);
 			}
 		}
 	}
 	
-	public void putAt(int x, int y, Piece s) throws BusyBoxException, WinException {
-		cells.get(new Point(x,y)).setPiece(s);
+	public void putAt(int x, int y, Piece s) throws BusyBoxException, WinException, TiedException {
+		Predicate<Cell> p = e -> e.isSet();
+		this.cells.get(new Point(x,y)).setPiece(s);
+		if(cells.values().stream().allMatch(p)) {
+			throw new TiedException();
+		}
 	}
 
 	

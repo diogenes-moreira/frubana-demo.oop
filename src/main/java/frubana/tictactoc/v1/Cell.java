@@ -46,6 +46,10 @@ public class Cell {
 	public void addSolution(Solution solution) {
 		this.getSolutions().add(solution);
 	}
+
+	public boolean isSet() {
+		return this.piece != null;
+	}
 	
 	
 }
